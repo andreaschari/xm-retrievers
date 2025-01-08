@@ -78,20 +78,26 @@ class MMARCOColbertLoader:
         # Load collection of passages.
         url = f'https://huggingface.co/datasets/unicamp-dl/mmarco/resolve/main/data/google/collections/{MMARCO_LANGUAGES.get(self.lang)[0]}_collection.tsv'
         data_filepaths['collection'] = self.download_if_not_exists(url)
+        print(f"#> Collection file: {data_filepaths['collection']}.")
 
         if self.load_test:
             # Load test queries. 
             url = f'https://huggingface.co/datasets/unicamp-dl/mmarco/resolve/main/data/google/queries/dev/{MMARCO_LANGUAGES.get(self.lang)[0]}_queries.dev.small.tsv'
-            data_filepaths['test_queries'] = self.download_if_not_exists(url)
+            # data_filepaths['test_queries'] = self.download_if_not_exists(url)
+            # data_filepaths['test_queries'] = "data/google_translations/ms.tsv" # Change this to the path of the test queries file.
+            print(f"#> Test queries file: {data_filepaths['test_queries']}.")
 
             # Load test qrels. 
             url = 'https://huggingface.co/datasets/unicamp-dl/mmarco/resolve/main/data/qrels.dev.small.tsv'
             data_filepaths['test_qrels'] = self.download_if_not_exists(url)
+            print(f"#> Test qrels file: {data_filepaths['test_qrels']}.")
 
         if self.load_train:
             # Load training queries. 
-            url = f'https://huggingface.co/datasets/unicamp-dl/mmarco/resolve/main/data/google/queries/train/{MMARCO_LANGUAGES.get(self.lang)[0]}_queries.train.tsv'
-            data_filepaths['train_queries'] = self.download_if_not_exists(url)
+            # url = f'https://huggingface.co/datasets/unicamp-dl/mmarco/resolve/main/data/google/queries/train/{MMARCO_LANGUAGES.get(self.lang)[0]}_queries.train.tsv'
+            # data_filepaths['train_queries'] = self.download_if_not_exists(url)
+            # data_filepaths['train_queries'] = "/root/nfs/CLIR/data/mmarco.fr_ca.train.judged.tsv" # Change this to the path of the training queries file.
+            print(f"#> Train queries file: {data_filepaths['train_queries']}.")
 
             # Load training qrels. 
             if self.train_qrels_type == "original":

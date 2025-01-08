@@ -58,7 +58,14 @@ MIRACL_LANGUAGES = {
     'th': ('thai', 'th_TH'),
     'zh': ('chinese', 'zh_CN'),
 }
-ALL_LANGUAGES = {**MMARCO_LANGUAGES, **MRTYDI_LANGUAGES, **MIRACL_LANGUAGES}
+
+NEUCLIR_LANGUAGES = {
+    'zh': ('chinese', 'zh_CN'),
+    'fa': ('persian', 'fa_IR'),
+    'ru': ('russian', 'ru_RU')
+}
+
+ALL_LANGUAGES = {**MMARCO_LANGUAGES, **MRTYDI_LANGUAGES, **MIRACL_LANGUAGES, **NEUCLIR_LANGUAGES}
 
 
 def load_sbert_model(model_name: str, max_seq_length: int, pooling: str):

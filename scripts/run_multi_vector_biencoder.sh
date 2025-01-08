@@ -1,16 +1,20 @@
 #!/bin/bash
 
 # To perform.
-DO_TRAIN="--do_train"
-DO_TEST="" #"--do_test"
+DO_TRAIN="" #"--do_train"
+DO_TEST="--do_test"
 
 # Data.
-DATA="mmarco" #"mrtydi"
-LANG="en"     #mMARCO: ("en" "fr" "ar" "de" "es" "hi" "id" "it" "ja" "nl" "pt" "ru" "vi" "zh"); Mr. TyDi: ("ar" "bn" "en" "fi" "id" "ja" "ko" "ru" "sw" "te")
+DATA="neuclir" #"mrtydi" #"neuclir" #"mmarco"
+LANG="ru"     #mMARCO: ("en" "fr" "ar" "de" "es" "hi" "id" "it" "ja" "nl" "pt" "ru" "vi" "zh"); Mr. TyDi: ("ar" "bn" "en" "fi" "id" "ja" "ko" "ru" "sw" "te"); neuCLIR: ("fa","zh", "ru")
 DATA_DIR="data"
 
-# Model.
-MODEL="facebook/xmod-base"
+# Model
+# MODEL="facebook/xmod-base"
+# XM fine-tuned on translated to CA mMARCO
+MODEL="andreaschari/colbert-xm-lt-cafr"
+# XM fine-tuned on translated to AF mMARCO
+# MODEL="andreaschari/colbert-xm-lt-afdt"
 DIM=128
 SIM="cosine"
 DOC_MAXLEN=256
@@ -24,7 +28,7 @@ if [[ "$TRAINING_TYPE" == "v1" || "$TRAINING_TYPE" == "v1.5" ]]; then
     TOTAL_STEPS=200000
     WARMUP_STEPS=20000 #If set, will perform warmup steps with linear decay.
     LR=5e-6
-    BATCH_SIZE=128
+    BATCH_SIZE=32
     ACC_STEPS=1
     NEGS_PER_QUERY=1
     USE_INBATCH_NEGS=""
@@ -45,7 +49,7 @@ if [ "$TRAINING_TYPE" = "v2" ]; then
     IGNORE_PROVIDED_SCORES_IF_ANY=""
     DISTIL_ALPHA=1.0
 fi
-OUT_DIR="output/training"
+OUT_DIR="/root/nfs/CLIR/data/models"
 
 # Indexing.
 NBITS=2

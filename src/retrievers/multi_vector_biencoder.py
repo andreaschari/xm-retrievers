@@ -12,6 +12,8 @@ from datetime import datetime
 
 from colbert.data import Queries, Collection
 from colbert.infra import Run, RunConfig, ColBERTConfig
+import logging
+
 
 try:
     from src.data.mmarco import MMARCOColbertLoader
@@ -19,8 +21,11 @@ except ModuleNotFoundError:
     sys.path.append(str(pathlib.Path().resolve()))
     from src.data.mmarco import MMARCOColbertLoader
 from src.data.mrtydi import MrTydiColbertLoader
+from src.utils.common import NEUCLIR_LANGUAGES
+from src.data.neuclir import NeuCLIRColbertLoader
 from src.utils.ColBERT import CustomTrainer, CustomIndexer, CustomSearcher, msmarco_evaluation
 
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 def main(args):
     if args.dataset == 'mmarco':
@@ -40,6 +45,13 @@ def main(args):
             load_test=args.do_test,
             data_folder=join(args.data_dir, args.dataset),
         ).run()
+    elif args.dataset == 'neuclir':
+        data_filepaths = NeuCLIRColbertLoader(
+            lang=args.language,
+            load_test=args.do_test,
+            data_folder=join(args.data_dir, args.dataset),
+        ).run()
+        pass
     else:
         raise ValueError("Dataset not supported.")
 
@@ -67,20 +79,23 @@ def main(args):
             model_kwargs['checkpoint'] = trainer.train(checkpoint=args.model_name)
 
     if args.do_test:
+        logging.info("Evaluating the model.")
         if 'checkpoints' in model_kwargs['checkpoint']:
             model_path, ckpt_name = model_kwargs['checkpoint'].split('/checkpoints/', 1)
         else:
             model_path, ckpt_name = join(run_kwargs['root'], run_kwargs['experiment'], model_kwargs['checkpoint'].split('/')[-1]), ""
         run_kwargs['index_root'] = join(model_path, 'indexes', ckpt_name)
         with Run().context(RunConfig(**run_kwargs)):
+            logging.info("Indexing the collection.")
             indexer = CustomIndexer(checkpoint=model_kwargs['checkpoint'], config=ColBERTConfig(**model_kwargs))
             indexer.index(name=f"{args.dataset}-{args.language}.index", collection=data_filepaths['collection'], overwrite='reuse')
 
         with Run().context(RunConfig(**run_kwargs)):
+            logging.info("Searching the test queries.")
             queries = Queries(data_filepaths['test_queries'])
             searcher = CustomSearcher(index=f"{args.dataset}-{args.language}.index", config=ColBERTConfig(**model_kwargs))
             ranking = searcher.search_all(queries, k=1000)
-            results_path = ranking.save(f"{args.dataset}-{args.language}-ranking.tsv")
+            results_path = ranking.save(f"{args.dataset}-{args.language}.ranking.tsv")
             msmarco_evaluation(argparse.Namespace(
                 ranking=results_path, 
                 qrels=data_filepaths['test_qrels'], 
@@ -166,7 +181,7 @@ if __name__ == '__main__':
     #   help="Threshold for the centroid score."
     # )
     # Data settings.
-    parser.add_argument("--dataset", type=str, choices=["mmarco", "mrtydi"],
+    parser.add_argument("--dataset", type=str, choices=["mmarco", "mrtydi", "neuclir"],
         help="Dataset to use for training."
     )
     parser.add_argument("--language", type=str,
