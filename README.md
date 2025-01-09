@@ -6,6 +6,9 @@
 [![Loader: Hugging Face](https://img.shields.io/static/v1.svg?label=🤗%20Models&message=ColBERT-XM&color=FF9900)](https://huggingface.co/antoinelouis/colbert-xm)
 [![Loader: Hugging Face](https://img.shields.io/static/v1.svg?label=🤗%20Models&message=DPR-XM&color=FF9900)](https://huggingface.co/antoinelouis/dpr-xm)
 
+# Improving Low-Resource Retrieval Effectiveness using Zero-Shot Linguistic Similarity Transfer
+This is a fork of the original ColBERT-XM repo, adding functionality to run neuMARCO and neuCLIR retrieval capabilities. The main paper repo is [here](https://github.com/andreaschari/linguistic-transfer).
+
 # Zero-Shot Multilingual Information Retrieval with Modular Retrievers
 
 This repository contains the code for reproducing the experimental results presented in the paper ["ColBERT-XM: A Modular Multi-Vector Representation Model for Zero-Shot Multilingual Information Retrieval"](https://arxiv.org/abs/2402.15059) by [Antoine Louis](https:/antoinelouis.co/work/), [Vageesh Saxena](https://www.maastrichtuniversity.nl/vk-saxena), [Gijs van Dijck](https://www.maastrichtuniversity.nl/gijs.vandijck), and [Jerry Spanakis](https://dke.maastrichtuniversity.nl/jerry.spanakis/).
